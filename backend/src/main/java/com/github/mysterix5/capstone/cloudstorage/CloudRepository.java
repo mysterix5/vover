@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -47,14 +49,25 @@ public class CloudRepository {
         }};
     }
 
-
-
-
     public String save(String filePath, byte[] byteArray) throws RuntimeException {
         HttpHeaders headers = createHeaders();
         headers.set("X-Requested-With", "XMLHttpRequest");
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        HttpEntity<byte[]> requestEntity = new HttpEntity<>(byteArray, headers);
+        MultiValueMap<String, String> fileMap = new LinkedMultiValueMap<>();
+        ContentDisposition contentDisposition = ContentDisposition
+                .builder("form-data")
+                .name("file")
+                .filename(filePath)
+                .build();
+        fileMap.add(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
+
+        HttpEntity<byte[]> fileEntity = new HttpEntity<>(byteArray, fileMap);
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", fileEntity);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> result = restTemplate.exchange(baseUrl, HttpMethod.POST, requestEntity, String.class);
 
