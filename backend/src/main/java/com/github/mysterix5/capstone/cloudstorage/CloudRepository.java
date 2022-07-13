@@ -46,4 +46,19 @@ public class CloudRepository {
             set( "Authorization", authHeader );
         }};
     }
+
+
+
+
+    public String save(String filePath, byte[] byteArray) throws RuntimeException {
+        HttpHeaders headers = createHeaders();
+        headers.set("X-Requested-With", "XMLHttpRequest");
+
+        HttpEntity<byte[]> requestEntity = new HttpEntity<>(byteArray, headers);
+
+        ResponseEntity<String> result = restTemplate.exchange(baseUrl, HttpMethod.POST, requestEntity, String.class);
+
+        return result.getBody();
+    }
+
 }

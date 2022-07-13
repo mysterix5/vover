@@ -63,4 +63,15 @@ public class CloudService {
         return createAudioResponseDTO(appended);
     }
 
+
+    public void saveFile(String localFilePath, String cloudFilePath) throws IOException {
+        File file = new File(localFilePath);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] arr = new byte[(int)file.length()];
+        fileInputStream.read(arr);
+        fileInputStream.close();
+
+        cloudRepository.save(cloudFilePath, arr);
+//        cloudRepository.postFile2(cloudFilePath, arr);
+    }
 }

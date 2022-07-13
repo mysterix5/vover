@@ -1,15 +1,24 @@
-import {Grid} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import TextSubmit from "./subcomponents/TextSubmit";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {WordResponse} from "../services/model";
 import TextCheck from "./subcomponents/TextCheck";
 import Audio from "./subcomponents/Audio";
-import {apiGetAudio} from "../services/apiServices";
+import {apiGetAudio, apiGetAudioAndPlay} from "../services/apiServices";
 
 
 export default function Main() {
 
     const [splitText, setSplitText] = useState<WordResponse[]>();
+    const [audioFile, setAudioFile] = useState<any>();
+
+    const audioplayer = useRef<HTMLAudioElement>(null);
+    function play(){
+        audioplayer.current?.play();
+    }
+    function pause(){
+        audioplayer.current?.pause();
+    }
 
     function isAvailable(availibility: string){
         return availibility==="PUBLIC";
@@ -25,7 +34,9 @@ export default function Main() {
     }
 
     function getAudio(){
-        apiGetAudio(splitText!);
+        // apiGetAudio(splitText!);
+        apiGetAudioAndPlay(splitText!)
+            .then(setAudioFile);
     }
 
     return (
@@ -43,6 +54,21 @@ export default function Main() {
                 {
                     splitText && checkSplitText() &&
                     <Audio getAudio={getAudio}/>
+                }
+            </Grid>
+            <Grid item>
+                { audioFile &&
+                    <>
+                    <audio src={audioFile} autoPlay={false} ref={audioplayer}>
+
+                    </audio>
+                    <Button onClick={play}>
+                        play
+                    </Button>
+                    <Button onClick={pause}>
+                        pause
+                    </Button>
+                    </>
                 }
             </Grid>
         </Grid>

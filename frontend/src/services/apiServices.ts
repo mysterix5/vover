@@ -22,3 +22,13 @@ export function apiGetAudio(words: WordResponse[]) {
             link.click();
         })
 }
+
+export function apiGetAudioAndPlay(words: WordResponse[]) {
+    return axios.put("/api/main/getaudio",
+        words,
+        {
+            responseType: 'arraybuffer'
+        })
+        .then((response) => response.data)
+        .then(data => window.URL.createObjectURL(new Blob([data])));
+}
