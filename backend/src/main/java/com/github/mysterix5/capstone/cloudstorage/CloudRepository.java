@@ -39,13 +39,13 @@ public class CloudRepository {
         return result.getBody();
     }
 
-        public HttpHeaders createHeaders() {
-        return new HttpHeaders(){{
+    public HttpHeaders createHeaders() {
+        return new HttpHeaders() {{
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.getEncoder().encode(
                     auth.getBytes(StandardCharsets.US_ASCII));
-            String authHeader = "Basic " + new String( encodedAuth );
-            set( "Authorization", authHeader );
+            String authHeader = "Basic " + new String(encodedAuth);
+            set("Authorization", authHeader);
         }};
     }
 
@@ -68,8 +68,9 @@ public class CloudRepository {
         body.add("file", fileEntity);
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        ResponseEntity<String> result = restTemplate.exchange(baseUrl, HttpMethod.POST, requestEntity, String.class);
+        String requestUrl = baseUrl + filePath;
+        log.info(requestUrl);
+        ResponseEntity<String> result = restTemplate.exchange(requestUrl, HttpMethod.PUT, requestEntity, String.class);
 
         return result.getBody();
     }
