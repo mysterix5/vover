@@ -1,5 +1,7 @@
 package com.github.mysterix5.capstone.cloudstorage;
 
+import com.github.sardine.Sardine;
+import com.github.sardine.SardineFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -8,6 +10,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -37,6 +41,21 @@ public class CloudRepository {
         ResponseEntity<byte[]> result = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(createHeaders()), byte[].class);
 
         return result.getBody();
+    }
+
+    public byte[] find2(String filePath) throws IOException {
+        String url = baseUrl + filePath;
+        Sardine sardine = SardineFactory.begin(username, password);
+        InputStream is = sardine.get(url);
+
+        return is.readAllBytes();
+    }
+
+    public void save2(String filePath, byte[] byteArray) throws IOException {
+        String url = baseUrl + filePath;
+        Sardine sardine = SardineFactory.begin(username, password);
+
+        sardine.put(url, byteArray);
     }
 
     public HttpHeaders createHeaders() {

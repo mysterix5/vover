@@ -35,7 +35,13 @@ public class CloudService {
         final AtomicReference<AudioFileFormat> atomicFormat= new AtomicReference<>(null);
 
         List<AudioInputStream> audioStreamList = cloudFilePaths.parallelStream()
-                .map(cloudRepository::find)
+                .map(filePath -> {
+                    try {
+                        return cloudRepository.find2(filePath);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .map(bytes -> {
                     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
                     AudioFileFormat format;
@@ -69,6 +75,6 @@ public class CloudService {
         fileInputStream.read(arr);
         fileInputStream.close();
 
-        cloudRepository.save(cloudFilePath, arr);
+        cloudRepository.save2(cloudFilePath, arr);
     }
 }
