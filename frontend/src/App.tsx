@@ -6,6 +6,7 @@ import {blueGrey} from "@mui/material/colors";
 import Header from "./Header";
 import Main from "./pages/main"
 import Record from './pages/record';
+import Mic from './pages/mic-recorder-to-mp3';
 
 const darkTheme = createTheme({
     palette: {
@@ -27,6 +28,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Main/>}/>
                     <Route path="/record" element={<Record/>}/>
+                    <Route path="/mic" element={<Mic/>}/>
                 </Routes>
             </BrowserRouter>
         </ThemeProvider>
