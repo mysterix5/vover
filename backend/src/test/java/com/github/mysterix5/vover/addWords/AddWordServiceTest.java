@@ -16,7 +16,7 @@ class AddWordServiceTest {
 
     // TODO only single and valid words allowed
     @Test
-    void addWordToDb() {
+    void addWordToDb() throws IOException {
         WordsMongoRepository mockedWordRepo = Mockito.mock(WordsMongoRepository.class);
         CloudRepository mockedCloudRepo = Mockito.mock(CloudRepository.class);
         AddWordService addWordService = new AddWordService(mockedWordRepo, mockedCloudRepo);
@@ -33,7 +33,7 @@ class AddWordServiceTest {
             mb.when(UUID::randomUUID).thenReturn(myUuid);
 
 
-            addWordService.addWordToDb(word, creator, tag, null);
+            addWordService.addWordToDb(word, creator, tag, "PUBLIC", null);
 
             try {
                 Mockito.verify(mockedCloudRepo).save(wordDbEntity.getCloudFileName(), null);

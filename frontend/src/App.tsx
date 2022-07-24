@@ -5,6 +5,10 @@ import Main from "./pages/Main";
 import Header from "./pages/subcomponents/Header";
 import {blueGrey} from "@mui/material/colors";
 import Record from "./pages/Record";
+import RegisterPage from "./usermanagement/RegisterPage";
+import LoginPage from "./usermanagement/LoginPage";
+import AuthProvider from "./usermanagement/AuthProvider";
+import GlobalVoverErrorDisplay from "./globalTools/GlobalVoverErrorDisplay";
 
 const darkTheme = createTheme({
     palette: {
@@ -22,11 +26,16 @@ export default function App() {
         <ThemeProvider theme={darkTheme}>
             <CssBaseline/>
             <BrowserRouter>
-                <Header/>
-                <Routes>
-                    <Route path="/" element={<Main/>}/>
-                    <Route path="/record" element={<Record/>}/>
-                </Routes>
+                <AuthProvider>
+                    <Header/>
+                    <Routes>
+                        <Route path="/" element={<Main/>}/>
+                        <Route path="/record" element={<Record/>}/>
+                        <Route path="/login" element={<LoginPage/>}/>
+                        <Route path="/register" element={<RegisterPage/>}/>
+                    </Routes>
+                    <GlobalVoverErrorDisplay/>
+                </AuthProvider>
             </BrowserRouter>
         </ThemeProvider>
     );
